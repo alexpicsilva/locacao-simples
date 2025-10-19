@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ficha de Controle de Locação</title>
+<style>
+body {
+  font-family: Arial, sans-serif;
+  background: #f5f7fa;
+  margin: 0;
+  padding: 20px;
+}
+
+.form-container {
+  background: #ffffff;
+  padding: 20px;
+  border-radius: 10px;
+  max-width: 800px;
+  margin: 0 auto 30px auto;
+  box-shadow: 0px 4px 15px rgba(0,0,0,0.1);
+}
+
+.form-header-container {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.form-logo {
+  width: 60px;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 10px;
+}
+
+.form-logo img {
+  width: 60px;
+  height: 60px;
+  object-fit: contain;
+  border-radius: 8px;
+}
+
+.form-title {
+  flex: 1;
+  text-align: center;
+  font-size: 22px;
+  font-weight: bold;
+  color: #2c3e50;
+}
+
+label {
+  display: block;
+  font-weight: bold;
+  margin-top: 8px;
+}
+
+input[type=text],
+input[type=date],
+input[type=number],
+input[type=tel],
+textarea {
+  width: calc(100% - 16px);
+  padding: 5px 8px;
+  margin-top: 4px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+  font-size: 11pt;
+}
+
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 8px;
+}
+
+.row .col {
+  flex: 1;
+  min-width: 120px;
+}
+
+.radio-group {
+  display: flex;
+  gap: 15px;
+  margin-top: 5px;
+  flex-wrap: wrap;
+}
+
+.radio-group label {
+  display: flex;
+  align-items: center;
+  margin-top: 0;
+}
+
+.radio-group input[type="radio"] {
+  margin-right: 5px;
+  width: auto;
+  padding: 0;
+  margin-top: 0;
+}
+
+.person-row, .vehicle-row {
+  display: flex;
+  gap: 10px;
+  margin-top: 5px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.person-row input, .vehicle-row input {
+  flex: 1 1 100%;
+}
+
+button, .add-person, .add-vehicle, #vehicleToggleBtn, #printBtn, #whatsappBtn {
+  background: #3498db;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  margin-top: 10px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 13px;
+}
+
+#whatsappBtn {
+  background: #28a745;
+}
+
+button:hover, .add-person:hover, .add-vehicle:hover, #vehicleToggleBtn:hover, #printBtn:hover, #whatsappBtn:hover {
+  opacity: 0.85;
+}
+
+.attention {
+  background: #fff3cd;
+  border: 1px solid #ffeeba;
+  padding: 20px 10px 10px 10px;
+  margin-top: 20px;
+  border-radius: 5px;
+  color: #856404;
+  white-space: pre-line;
+  font-size: 10pt;
+  line-height: 1.6;
+}
+
+.button-group {
+  display: flex;
+  gap: 10px;
+  margin-top: 15px;
+  flex-wrap: wrap;
+}
+
+#vehicleSection {
+  display: none;
+  margin-top: 15px;
+  padding: 15px;
+  background: #f9f9f9;
+  border-radius: 5px;
+}
+
+#reviewPage {
+  display: none;
+}
+
+.review-item {
+  margin-top: 8px;
+}
+
+.review-label {
+  font-weight: bold;
+}
+
+.review-value {
+  margin-left: 5px;
+  text-transform: uppercase;
+}
+
+#peopleTitle {
+  text-align: center;
+  font-weight: bold;
+  margin-top: 15px;
+  margin-bottom: 5px;
+  font-size: 16pt;
+}
+
+#peopleSummary {
+  text-align: center;
+  font-weight: bold;
+  margin-bottom: 10px;
+  font-size: 14pt;
+  color:#2c3e50;
+}
+
+.signature-line {
+  margin-top: 40px;
+  text-align: center;
+}
+
+.signature-line hr {
+  border: 1px solid #000;
+  width: 300px;
+  margin: 0 auto;
+}
+
+.signature-line span {
+  display: block;
+  text-align: center;
+  margin-top: 5px;
+  font-weight: bold;
+}
+
+@media(max-width: 600px){
+  .row { flex-direction: column; }
+  .person-row, .vehicle-row { flex-direction: column; }
+  .form-header-container { flex-direction: column; }
+  .form-logo { margin-bottom: 10px; }
+  .radio-group { flex-direction: column; }
+}
+
+@media print {
+  body, html {
+    width: 210mm;
+    height: 297mm;
+    margin: 0;
+    padding: 0;
+  }
+  body * { visibility: hidden; }
+  #reviewPage, #reviewPage * { visibility: visible; }
+  #reviewPage { position: absolute; top: 0; left: 0; width: 190mm; margin: 0 10mm; }
+  .button-group, #whatsappBtn, .form-logo img { display: none; }
+}
+
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 80px;
+  height: 28px;
+  font-size: 10px;
+  text-align: center;
+  line-height: 28px;
+  color: white;
+  font-weight: bold;
+}
+.switch input { display:none; }
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top:0; left:0; right:0; bottom:0;
+  background-color:#ccc;
+  transition:.4s;
+  border-radius:28px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:10px;
+}
+.slider:before {
+  position:absolute;
+  content:"NÃO";
+  height:24px; width:24px;
+  left:2px; bottom:2px;
+  background-color:white;
+  color:#000;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  transition:.4s;
+  border-radius:50%;
+  font-size: 8px;
+}
+input:checked + .slider {
+  background-color:#28a745;
+}
+input:checked + .slider:before {
+  transform: translateX(50px);
+  content:"SIM";
+}
+</style>
+</head>
+<body>
+
+<form id="locacaoForm" class="form-container">
+  <div class="form-header-container">
+    <div class="form-logo">
+      <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQllRvQO-abR2lBbfOmwUyY3ZLx9-3t7yriIeO06gXxa5jsBNkdDRdcfEWWq0cyydxi0CI&usqp=CAU" alt="Logo">
+    </div>
+    <div class="form-title">FICHA PARA CONTROLE DE LOCAÇÃO</div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <label>Nome do Edifício:</label>
+      <input type="text" name="edificio" required>
+    </div>
+    <div class="col">
+      <label>Número do Apartamento:</label>
+      <input type="text" name="apartamento" required>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <label>Nome do Responsável:</label>
+      <input type="text" name="responsavel" placeholder="Nome do ocupante responsável" required oninput="updateResponsiblePerson()">
+    </div>
+    <div class="col">
+      <label>Telefone:</label>
+      <input type="tel" name="telefone" placeholder="(00) 00000-0000" required oninput="formatPhone(this); updateResponsiblePerson()">
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <label>CPF:</label>
+      <input type="text" name="cpf" maxlength="14" required oninput="formatCPF(this); updateResponsiblePerson()">
+    </div>
+    <div class="col">
+      <label>RG:</label>
+      <input type="text" name="rg" required oninput="updateResponsiblePerson()">
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <label>Endereço:</label>
+      <input type="text" name="endereco" required>
+    </div>
+    <div class="col">
+      <label>Número:</label>
+      <input type="text" name="numero" required>
+    </div>
+    <div class="col">
+      <label>Bairro:</label>
+      <input type="text" name="bairro" required>
+    </div>
+    <div class="col">
+      <label>Cidade:</label>
+      <input type="text" name="cidade" required>
+    </div>
+    <div class="col">
+      <label>UF:</label>
+      <input type="text" name="uf" required>
+    </div>
+  </div>
+
+  <button type="button" id="vehicleToggleBtn">REGISTRAR VEÍCULO</button>
+  <div id="vehicleSection">
+    <label id="vehicleTitle">Informe os dados do veículo</label>
+    <div id="vehicleContainer"></div>
+    <button type="button" class="add-vehicle">ADICIONAR VEÍCULO</button>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <label>Data de Chegada:</label>
+      <input type="date" name="chegada" required>
+    </div>
+    <div class="col">
+      <label>Data de Saída:</label>
+      <input type="date" name="saida" required>
+    </div>
+  </div>
+
+  <label>Lista de Pessoas e Documentos:</label>
+  <div id="peopleContainer">
+    <div class="person-row responsible">
+      <div class="col">
+        <label>Nome:</label>
+        <input type="text" readonly>
+      </div>
+      <div class="col">
+        <label>Documento:</label>
+        <input type="text" readonly>
+      </div>
+      <div class="col">
+        <label>Criança:</label>
+        <label class="switch">
+          <input type="checkbox" disabled>
+          <span class="slider"></span>
+        </label>
+      </div>
+    </div>
+  </div>
+  <button type="button" class="add-person">ADICIONAR PESSOA</button>
+
+  <label>Tipo de locação:</label>
+  <div class="radio-group">
+    <label><input type="radio" name="tipoLocacao" value="Emprestado" required> Emprestado</label>
+    <label><input type="radio" name="tipoLocacao" value="Alugado pelo proprietário"> Alugado pelo proprietário</label>
+    <label><input type="radio" name="tipoLocacao" value="Alugado pela imobiliária"> Alugado pela imobiliária</label>
+  </div>
+
+  <div class="button-group">
+    <button type="button" id="finalizarBtn">FINALIZAR</button>
+  </div>
+</form>
+
+<div id="reviewPage" class="form-container">
+  <div class="form-header-container">
+    <div class="form-logo">
+      <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQllRvQO-abR2lBbfOmwUyY3ZLx9-3t7yriIeO06gXxa5jsBNkdDRdcfEWWq0cyydxi0CI&usqp=CAU" alt="Logo">
+    </div>
+    <div class="form-title">FICHA PARA CONTROLE DE LOCAÇÃO</div>
+  </div>
+  <div id="reviewContent"></div>
+  <div id="peopleTitle">LISTA DE INQUILINOS</div>
+  <div id="peopleSummary"></div>
+  <div id="reviewPeople"></div>
+  <div class="attention">
+ATENÇÃO: 
+Não é permitida a ocupação do apartamento sem a apresentação desta ficha cadastral totalmente preenchida. Assim como o empréstimo do cartão de acesso ao prédio. A ficha deverá ser entregue com 24 horas de antecedência à ocupação. 
+
+ART. 9º da convenção de condomínio – Sei e concordo que sou responsável perante o condomínio, civil ou criminalmente, por todos os atos ou infrações que venham a ser praticados por meus empregados, inquilinos ou ocupantes da minha unidade.
+  </div>
+
+  <div style="margin-top:10px;">
+    <button id="enviarBtn" style="width:100%; margin-bottom:10px;">ENVIAR</button>
+  </div>
+
+  <div class="button-group">
+    <button id="voltarBtn">VOLTAR E EDITAR</button>
+    <button id="printBtn">IMPRIMIR</button>
+    <button id="whatsappBtn">FALE COM A PORTARIA BLINDADO</button>
+  </div>
+
+  <div class="signature-line">
+    <hr>
+    <span>OCUPANTE RESPONSÁVEL</span>
+  </div>
+</div>
+
+<script>
+function formatCPF(input){
+  let v=input.value.replace(/\D/g,'');
+  if(v.length>11)v=v.slice(0,11);
+  v=v.replace(/(\d{3})(\d)/,'$1.$2');
+  v=v.replace(/(\d{3})(\d)/,'$1.$2');
+  v=v.replace(/(\d{3})(\d{1,2})$/,'$1-$2');
+  input.value=v;
+}
+
+function formatPhone(input){
+  let v=input.value.replace(/\D/g,'');
+  if(v.length>11)v=v.slice(0,11);
+  v=v.replace(/(\d{2})(\d)/,'($1) $2');
+  v=v.replace(/(\d{5})(\d)/,'$1-$2');
+  input.value=v;
+}
+
+function updateResponsiblePerson(){
+  const row=document.querySelector('.person-row.responsible');
+  row.querySelectorAll('input')[0].value=document.querySelector('input[name="responsavel"]').value;
+  row.querySelectorAll('input')[1].value=document.querySelector('input[name="cpf"]').value;
+}
+
+function addPersonRow(){
+  const container=document.getElementById('peopleContainer');
+  const row=document.createElement('div');
+  row.className='person-row';
+  row.innerHTML=`<div class="col"><label>Nome:</label><input type="text" placeholder="Nome completo" required></div>
+  <div class="col"><label>Documento:</label><input type="text" placeholder="Número do documento" required></div>
+  <div class="col"><label>Criança:</label>
+    <label class="switch"><input type="checkbox" onchange="updateCounts()"><span class="slider"></span></label>
+  </div>`;
+  container.appendChild(row);
+}
+
+function addVehicleRow(){
+  const container=document.getElementById('vehicleContainer');
+  const newRow=document.createElement('div');
+  newRow.className='vehicle-row';
+  const count=container.querySelectorAll('.vehicle-row').length+1;
+  newRow.innerHTML=`<div class="col"><label>Modelo do veículo:</label><input type="text" name="veiculo[]" placeholder="Modelo do veículo ${count}"></div>
+  <div class="col"><label>Cor:</label><input type="text" name="cor[]" placeholder="Cor ${count}"></div>
+  <div class="col"><label>Placa:</label><input type="text" name="placa[]" placeholder="Placa ${count}"></div>`;
+  container.appendChild(newRow);
+}
+
+const vehicleToggleBtn=document.getElementById('vehicleToggleBtn');
+vehicleToggleBtn.addEventListener('click',()=>{
+  const sec=document.getElementById('vehicleSection');
+  if(sec.style.display==='none'||sec.style.display===''){
+    sec.style.display='block';
+    vehicleToggleBtn.textContent='NÃO REGISTRAR VEÍCULO';
+    if(document.getElementById('vehicleContainer').children.length===0) addVehicleRow();
+  }else{
+    sec.style.display='none';
+    vehicleToggleBtn.textContent='REGISTRAR VEÍCULO';
+    document.getElementById('vehicleContainer').innerHTML='';
+  }
+});
+
+document.querySelector('.add-person').addEventListener('click',addPersonRow);
+document.querySelector('.add-vehicle').addEventListener('click',addVehicleRow);
+
+function updateCounts(){
+  let adults=1;
+  let children=0;
+  const rows=document.querySelectorAll('.person-row');
+  rows.forEach((r,i)=>{
+    if(r.classList.contains('responsible')) return;
+    const checkbox=r.querySelector('input[type=checkbox]');
+    if(checkbox.checked) children++; else adults++;
+  });
+  return {adults, children};
+}
+
+document.getElementById('finalizarBtn').addEventListener('click',()=>{
+  const counts=updateCounts();
+  const form=document.getElementById('locacaoForm');
+  const review=document.getElementById('reviewPage');
+  const reviewContent=document.getElementById('reviewContent');
+  const reviewPeople=document.getElementById('reviewPeople');
+  const peopleSummary=document.getElementById('peopleSummary');
+
+  reviewContent.innerHTML='';
+  reviewPeople.innerHTML='';
+
+  const addItem=(label,value)=>{
+    const div=document.createElement('div');
+    div.className='review-item';
+    div.innerHTML=`<span class="review-label">${label}:</span> <span class="review-value">${value.toUpperCase()}</span>`;
+    reviewContent.appendChild(div);
+  }
+
+  addItem('Edifício',form.edificio.value);
+  addItem('Apartamento',form.apartamento.value);
+  addItem('Responsável',form.responsavel.value);
+  addItem('Telefone',form.telefone.value);
+  addItem('CPF',form.cpf.value);
+  addItem('RG',form.rg.value);
+  addItem('Endereço',form.endereco.value);
+  addItem('Número',form.numero.value);
+  addItem('Bairro',form.bairro.value);
+  addItem('Cidade',form.cidade.value);
+  addItem('UF',form.uf.value);
+  addItem('Chegada',form.chegada.value);
+  addItem('Saída',form.saida.value);
+
+  const rows=document.querySelectorAll('.person-row');
+  rows.forEach(r=>{
+    const name=r.querySelectorAll('input')[0].value.toUpperCase();
+    const doc=r.querySelectorAll('input')[1].value;
+    const isChild=r.querySelector('input[type=checkbox]')?.checked;
+    let docLabel='';
+    if(doc.length===11) docLabel='CPF'; else if(doc.length>0) docLabel='RG';
+    const div=document.createElement('div');
+    div.className='review-item';
+    div.innerHTML=`<span class="review-value">${name}${isChild?' | CRIANÇA':''}${doc?` | ${docLabel}: ${doc}`:''}</span>`;
+    reviewPeople.appendChild(div);
+  });
+
+  peopleSummary.textContent=`ADULTOS: ${counts.adults} | CRIANÇAS: ${counts.children}`;
+
+  form.style.display='none';
+  review.style.display='block';
+});
+
+document.getElementById('voltarBtn').addEventListener('click',()=>{
+  document.getElementById('locacaoForm').style.display='block';
+  document.getElementById('reviewPage').style.display='none';
+});
+
+document.getElementById('printBtn').addEventListener('click',()=>window.print());
+
+document.getElementById('enviarBtn').addEventListener('click',()=>{
+  const form=document.getElementById('locacaoForm');
+  const rows=document.querySelectorAll('.person-row');
+  let msg=`Nome: ${form.responsavel.value}\nCPF: ${form.cpf.value}\nTelefone: ${form.telefone.value}`;
+  rows.forEach(r=>{
+    const name=r.querySelectorAll('input')[0].value;
+    const doc=r.querySelectorAll('input')[1].value;
+    const isChild=r.querySelector('input[type=checkbox]')?.checked;
+    if(name && !r.classList.contains('responsible')){
+      msg+=`\n${name}${isChild?' | CRIANÇA':''}${doc?` | Documento: ${doc}`:''}`;
+    }
+  });
+  const link='https://wa.me/5527998173386?text='+encodeURIComponent(msg);
+  window.open(link,'_blank');
+});
+
+document.getElementById('whatsappBtn').addEventListener('click',()=>{
+  window.open('https://api.whatsapp.com/send/?phone=5527998173386','_blank');
+});
+</script>
+
+</body>
+</html>
+
