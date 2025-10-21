@@ -226,10 +226,19 @@ button:hover, .add-person:hover, .add-vehicle:hover, #vehicleToggleBtn:hover, #p
 
 @media(max-width: 600px){
   .row { flex-direction: column; }
-  .person-row, .vehicle-row { flex-direction: column; }
+  .person-row, .vehicle-row { flex-direction: column; align-items: flex-start; }
   .form-header-container { flex-direction: column; }
   .form-logo { margin-bottom: 10px; }
   .radio-group { flex-direction: column; }
+  .person-row .col, .vehicle-row .col {
+    flex: none; /* Remove flex-grow on small screens */
+    width: 100%; /* Make cols take full width */
+  }
+  .remove-button {
+    margin-left: 0; /* Remove left margin on small screens */
+    margin-top: 10px; /* Add some top margin for spacing */
+    width: 100%; /* Make button take full width */
+  }
 }
 
 @media print {
@@ -476,7 +485,7 @@ input:checked + .slider:before {
 
 <script>
 const edificios = {
-  "ALESSANDRO": "",
+  "ALESSANDRO": "", 
   "ANGELICA PAGANINI": "",
   "ANTONIO DI PIETRO": "",
   "ATOBA": "",
@@ -533,7 +542,6 @@ const edificios = {
   "VARANDAS DO MAR": "",
   "VENETO": "",
   "VERDES MARES": "",
-  
 };
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -569,8 +577,14 @@ function addPersonRow() {
   newRow.innerHTML = `
     <div class="col"><label>Nome:</label><input type="text" required></div>
     <div class="col"><label>Documento:</label><input type="text" required></div>
-    <div class="col"><label>Criança:</label><label class="switch"><input type="checkbox"><span class="slider"></span></label></div>
-    <button type="button" class="remove-button" onclick="this.parentElement.remove()">REMOVER</button>
+    <div class="col" style="display: flex; align-items: center; justify-content: space-between;">
+        <label>Criança:</label>
+        <label class="switch" style="margin-right: 10px;">
+            <input type="checkbox">
+            <span class="slider"></span>
+        </label>
+        <button type="button" class="remove-button" onclick="this.closest(\".person-row\").remove()">REMOVER</button>
+    </div>
   `;
   container.appendChild(newRow);
 }
@@ -582,8 +596,13 @@ function addVehicleRow() {
   newRow.innerHTML = `
     <div class="col"><label>Modelo:</label><input type="text" required></div>
     <div class="col"><label>Cor:</label><input type="text" required></div>
-    <div class="col"><label>Placa:</label><input type="text" required></div>
-    <button type="button" class="remove-button" onclick="this.parentElement.remove()">REMOVER</button>
+    <div class="col" style="display: flex; align-items: flex-end;">
+        <div style="flex: 1;">
+            <label>Placa:</label>
+            <input type="text" required>
+        </div>
+        <button type="button" class="remove-button" onclick="this.closest(\".vehicle-row\").remove()">REMOVER</button>
+    </div>
   `;
   container.appendChild(newRow);
 }
@@ -636,7 +655,7 @@ function showReview() {
   document.querySelectorAll(".person-row").forEach(row => {
     const nome = row.children[0].children[1].value;
     const doc = row.children[1].children[1].value;
-    const isChild = row.children[2].children[0].children[0].checked ? " (Criança)" : "";
+    const isChild = row.querySelector(".switch input[type='checkbox']").checked ? " (Criança)" : "";
     const summaryItem = document.createElement("div");
     summaryItem.textContent = `${nome} - ${doc}${isChild}`;
     peopleSummary.appendChild(summaryItem);
@@ -746,3 +765,4 @@ document.addEventListener("DOMContentLoaded", function() {
 </script>
 </body>
 </html>
+
