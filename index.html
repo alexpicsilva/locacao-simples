@@ -411,21 +411,10 @@ input:checked + .slider:before {
   <label>Lista de Pessoas e Documentos:</label>
   <div id="peopleContainer">
     <div class="person-row responsible">
-      <div class="col">
-        <label>Nome:</label>
-        <input type="text" readonly>
-      </div>
-      <div class="col">
-        <label>Documento:</label>
-        <input type="text" readonly>
-      </div>
-      <div class="col">
-        <label>Criança:</label>
-        <label class="switch">
-          <input type="checkbox" disabled>
-          <span class="slider"></span>
-        </label>
-      </div>
+      <div class="col"><label>Nome:</label><input type="text" readonly></div>
+      <div class="col"><label>Documento:</label><input type="text" readonly></div>
+      <div class="col"><label>Criança:</label><label class="switch"><input type="checkbox" disabled><span class="slider"></span></label></div>
+      <!-- Não há botão de remover para a pessoa responsável -->
     </div>
   </div>
   <button type="button" class="add-person">ADICIONAR PESSOA</button>
