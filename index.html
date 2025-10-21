@@ -316,7 +316,7 @@ input:checked + .slider:before {
   <div class="row">
     <div class="col">
       <label>Nome do Edifício:</label>
-      <input type="text" name="edificio" id="edificioInput" list="edificiosList" required>
+      <input type="text" name="edificio" id="edificioInput" required>
     </div>
     <div class="col">
       <label>Número do Apartamento:</label>
@@ -421,6 +421,15 @@ input:checked + .slider:before {
   </div>
 </form>
 
+<div id="edificioSelectionModal" style="display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgba(0,0,0,0.4);">
+  <div style="background-color: #fefefe; margin: 15% auto; padding: 20px; border: 1px solid #888; width: 80%; max-width: 500px; border-radius: 10px;">
+    <h2>Selecione o Edifício</h2>
+    <input type="text" id="edificioSearchInput" placeholder="Buscar edifício..." style="width: calc(100% - 20px); padding: 10px; margin-bottom: 10px; border: 1px solid #ccc; border-radius: 5px;">
+    <div id="edificioListContainer" style="max-height: 300px; overflow-y: auto; border: 1px solid #eee; padding: 10px; border-radius: 5px;"></div>
+    <button id="closeEdificioModal" style="background-color: #f44336; color: white; padding: 10px 15px; border: none; border-radius: 5px; cursor: pointer; margin-top: 10px;">Fechar</button>
+  </div>
+</div>
+
 <div id="reviewPage" class="form-container">
   <div class="form-header-container">
     <div class="form-logo">
@@ -477,6 +486,40 @@ const edificiosNovaGuarapari = [
   "PRAIA DE PERACANGA", "PREDILETTO", "RECANTO DA PRAIA", "SANTORINI",
   "SEVEN", "SERENATA", "SOLLARIUM", "SPLENDIA", "VENETO", "VERDES MARES"
 ];
+
+const allEdificios = [...edificiosPraiaDoMorro, ...edificiosNovaGuarapari].sort();
+
+function populateEdificioModal(filter = '') {
+  const container = document.getElementById('edificioListContainer');
+  container.innerHTML = '';
+  const filteredEdificios = allEdificios.filter(edificio =>
+    edificio.toLowerCase().includes(filter.toLowerCase())
+  );
+  filteredEdificios.forEach(edificio => {
+    const div = document.createElement('div');
+    div.className = 'edificio-item';
+    div.textContent = edificio;
+    div.addEventListener('click', () => {
+      document.getElementById('edificioInput').value = edificio;
+      document.getElementById('edificioSelectionModal').style.display = 'none';
+    });
+    container.appendChild(div);
+  });
+}
+
+document.getElementById('edificioInput').addEventListener('click', () => {
+  document.getElementById('edificioSelectionModal').style.display = 'flex';
+  populateEdificioModal();
+});
+
+document.getElementById('edificioSearchInput').addEventListener('keyup', (e) => {
+  populateEdificioModal(e.target.value);
+});
+
+document.getElementById('closeEdificioModal').addEventListener('click', () => {
+  document.getElementById('edificioSelectionModal').style.display = 'none';
+});
+
 
 function getPhoneNumber(edificio) {
   const edificioUpper = edificio.toUpperCase();
@@ -628,92 +671,32 @@ document.getElementById('voltarBtn').addEventListener('click',()=>{
 
 document.getElementById('printBtn').addEventListener('click',()=>window.print());
 
-document.getElementById('enviarBtn').addEventListener('click',()=>{
-  const form=document.getElementById('locacaoForm');
-  const rows=document.querySelectorAll('.person-row');
+document.getElementById("enviarBtn").addEventListener("click",()=>{
+  const form=document.getElementById("locacaoForm");
+  const rows=document.querySelectorAll(".person-row");
   let msg=`Nome: ${form.responsavel.value}\nCPF: ${form.cpf.value}\nTelefone: ${form.telefone.value}`;
   rows.forEach(r=>{
-    const name=r.querySelectorAll('input')[0].value;
-    const doc=r.querySelectorAll('input')[1].value;
-    const isChild=r.querySelector('input[type=checkbox]')?.checked;
-    if(name && !r.classList.contains('responsible')){
-      msg+=`\n${name}${isChild?' | CRIANÇA':''}${doc?` | Documento: ${doc}`:''}`;
+    const name=r.querySelectorAll("input")[0].value;
+    const doc=r.querySelectorAll("input")[1].value;
+    const isChild=r.querySelector("input[type=checkbox]")?.checked;
+    if(name && !r.classList.contains("responsible")){
+      msg+=`\n${name}${isChild?" | CRIANÇA":""}${doc?` | Documento: ${doc}`:""}`;
     }
   });
   const edificioSelecionado = document.getElementById('edificioInput').value;
   const phoneNumber = getPhoneNumber(edificioSelecionado);
   const link='https://wa.me/' + phoneNumber + '?text=' + encodeURIComponent(msg);
-  window.open(link,'_blank');
+  window.open(link,"_blank");
 });
 
-document.getElementById('whatsappBtn').addEventListener('click',()=>{
+document.getElementById("whatsappBtn").addEventListener("click",()=>{
   const edificioSelecionado = document.getElementById('edificioInput').value;
   const phoneNumber = getPhoneNumber(edificioSelecionado);
-  window.open(`https://api.whatsapp.com/send/?phone=${phoneNumber}`,'_blank');
+  window.open(`https://api.whatsapp.com/send/?phone=${phoneNumber}`,"_blank");
 });
 </script>
 
-<datalist id="edificiosList">
-    <option value="ALESSANDRO">
-    <option value="ANGELICA PAGANINI">
-    <option value="ANTONIO DI PIETRO">
-    <option value="ATOBA">
-    <option value="ATRIUM VERONA">
-    <option value="BELLAGIO">
-    <option value="BOLONHA">
-    <option value="CAIADO RODRIGUES">
-    <option value="CALIFORNIA">
-    <option value="CAROLINA">
-    <option value="CASA BLANCA">
-    <option value="CORAIS DA ENSEADA">
-    <option value="CORDIALLE">
-    <option value="DEL PIETRO">
-    <option value="DOM HENRIQUE">
-    <option value="ENSEADA VIP">
-    <option value="GRAAL">
-    <option value="GRANITO">
-    <option value="ILHA DAS GARÇAS">
-    <option value="ILHA DE COMANDATUBA">
-    <option value="JEAN MARCEL">
-    <option value="JUIZ PEDRO">
-    <option value="LAVINIA">
-    <option value="LONG SUMMER">
-    <option value="MAESTRO">
-    <option value="MAIS JK">
-    <option value="MALIBU">
-    <option value="MAR E SOL">
-    <option value="MAR DE VENEZA">
-    <option value="MARGARIDA MOTTA">
-    <option value="MAREK">
-    <option value="MARIA BONFIM">
-    <option value="MIRADOR">
-    <option value="MONTE BLU">
-    <option value="MOOREA BEACH">
-    <option value="MURANO">
-    <option value="NINIVE ALMEIDA">
-    <option value="PANORAMIC">
-    <option value="PERACANGA">
-    <option value="PONTAL D’AREIA">
-    <option value="PRAIA BELLA">
-    <option value="PRAIA DAS VIRTUDES">
-    <option value="PRAIA DE PERACANGA">
-    <option value="PREDILETTO">
-    <option value="PRIME">
-    <option value="RECANTO DA PRAIA">
-    <option value="REFINATTO">
-    <option value="RUBEM BRAGA">
-    <option value="SANTORINI">
-    <option value="SERENATA">
-    <option value="SEVEN">
-    <option value="SOLLARIUM">
-    <option value="SPLENDIA">
-    <option value="SUMMER HILL">
-    <option value="TIFANY">
-    <option value="VARANDAS DO MAR">
-    <option value="VENETO">
-    <option value="VERDES MARES">
-    <option value="VIENA">
-  </datalist>
+
 
 </body>
 </html>
