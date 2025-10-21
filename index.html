@@ -445,7 +445,7 @@ input:checked + .slider:before {
     <div class="form-logo">
       <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQllRvQO-abR2lBbfOmwUyY3ZLx9-3t7yriIeO06gXxa5jsBNkdDRdcfEWWq0cyydxi0CI&usqp=CAU" alt="Logo">
     </div>
-    <div class="form-title">FICHA DE CONTROLE DE LOCAÇÃO</div>
+    <div class="form-title">FICHA PARA CONTROLE DE LOCAÇÃO</div>
   </div>
 
   <div id="reviewContent"></div>
@@ -476,8 +476,64 @@ input:checked + .slider:before {
 
 <script>
 const edificios = {
-  "Edifício 1": "5548999999999",
-  "Edifício 2": "5548888888888",
+  "ALESSANDRO": "",
+  "ANGELICA PAGANINI": "",
+  "ANTONIO DI PIETRO": "",
+  "ATOBA": "",
+  "ATRIUM VERONA": "",
+  "BELLAGIO": "",
+  "BOLONHA": "",
+  "CAIADO RODRIGUES": "",
+  "CALIFORNIA": "",
+  "CAROLINA": "",
+  "CASA BLANCA": "",
+  "CORAIS DA ENSEADA": "",
+  "CORDIALLE": "",
+  "DEL PIETRO": "",
+  "DOM HENRIQUE": "",
+  "ENSEADA VIP": "",
+  "GRAAL": "",
+  "GRANITO": "",
+  "ILHA DE COMANDATUBA": "",
+  "ILHA DAS GARÇAS": "",
+  "JEAN MARCEL": "",
+  "JUIZ PEDRO": "",
+  "LAVINIA": "",
+  "LONG SUMMER": "",
+  "MAESTRO": "",
+  "MAIS JK": "",
+  "MALIBU": "",
+  "MAR E SOL": "",
+  "MARGARIDA MOTTA": "",
+  "MAREK": "",
+  "MAR DE VENEZA": "",
+  "MIRADOR": "",
+  "MONTE BLU": "",
+  "MOOREA BEACH": "",
+  "MURANO": "",
+  "NINIVE ALMEIDA": "",
+  "PANORAMIC": "",
+  "PERACANGA": "",
+  "PONTAL D’AREIA": "",
+  "PRAIA DE PERACANGA": "",
+  "PRAIA DAS VIRTUDES": "",
+  "PRAIA BELLA": "",
+  "PREDILETTO": "",
+  "PRIME": "",
+  "RECANTO DA PRAIA": "",
+  "REFINATTO": "",
+  "RUBEM BRAGA": "",
+  "SANTORINI": "",
+  "SERENATA": "",
+  "SEVEN": "",
+  "SOLLARIUM": "",
+  "SPLENDIA": "",
+  "SUMMER HILL": "",
+  "TIFANY": "",
+  "VARANDAS DO MAR": "",
+  "VENETO": "",
+  "VERDES MARES": "",
+  
 };
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -604,7 +660,67 @@ document.getElementById("vehicleToggleBtn").addEventListener("click", function()
 });
 
 function getPhoneNumber(edificio) {
-  return edificios[edificio] || "";
+  // Aqui você pode adicionar os números de telefone correspondentes aos edifícios
+  const phoneNumbers = {
+    "ALESSANDRO": "5548999999999", 
+    "ANGELICA PAGANINI": "5548999999999",
+    "ANTONIO DI PIETRO": "5548999999999",
+    "ATOBA": "5548999999999",
+    "ATRIUM VERONA": "5548999999999",
+    "BELLAGIO": "5548999999999",
+    "BOLONHA": "5548999999999",
+    "CAIADO RODRIGUES": "5548999999999",
+    "CALIFORNIA": "5548999999999",
+    "CAROLINA": "5548999999999",
+    "CASA BLANCA": "5548999999999",
+    "CORAIS DA ENSEADA": "5548999999999",
+    "CORDIALLE": "5548999999999",
+    "DEL PIETRO": "5548999999999",
+    "DOM HENRIQUE": "5548999999999",
+    "ENSEADA VIP": "5548999999999",
+    "GRAAL": "5548999999999",
+    "GRANITO": "5548999999999",
+    "ILHA DE COMANDATUBA": "5548999999999",
+    "ILHA DAS GARÇAS": "5548999999999",
+    "JEAN MARCEL": "5548999999999",
+    "JUIZ PEDRO": "5548999999999",
+    "LAVINIA": "5548999999999",
+    "LONG SUMMER": "5548999999999",
+    "MAESTRO": "5548999999999",
+    "MAIS JK": "5548999999999",
+    "MALIBU": "5548999999999",
+    "MAR E SOL": "5548999999999",
+    "MARGARIDA MOTTA": "5548999999999",
+    "MAREK": "5548999999999",
+    "MAR DE VENEZA": "5548999999999",
+    "MIRADOR": "5548999999999",
+    "MONTE BLU": "5548999999999",
+    "MOOREA BEACH": "5548999999999",
+    "MURANO": "5548999999999",
+    "NINIVE ALMEIDA": "5548999999999",
+    "PANORAMIC": "5548999999999",
+    "PERACANGA": "5548999999999",
+    "PONTAL D’AREIA": "5548999999999",
+    "PRAIA DE PERACANGA": "5548999999999",
+    "PRAIA DAS VIRTUDES": "5548999999999",
+    "PRAIA BELLA": "5548999999999",
+    "PREDILETTO": "5548999999999",
+    "PRIME": "5548999999999",
+    "RECANTO DA PRAIA": "5548999999999",
+    "REFINATTO": "5548999999999",
+    "RUBEM BRAGA": "5548999999999",
+    "SANTORINI": "5548999999999",
+    "SERENATA": "5548999999999",
+    "SEVEN": "5548999999999",
+    "SOLLARIUM": "5548999999999",
+    "SPLENDIA": "5548999999999",
+    "SUMMER HILL": "5548999999999",
+    "TIFANY": "5548999999999",
+    "VARANDAS DO MAR": "5548999999999",
+    "VENETO": "5548999999999",
+    "VERDES MARES": "5548999999999",
+  };
+  return phoneNumbers[edificio] || "";
 }
 
 document.getElementById("whatsappBtn").addEventListener("click",()=>{
@@ -630,4 +746,3 @@ document.addEventListener("DOMContentLoaded", function() {
 </script>
 </body>
 </html>
-
