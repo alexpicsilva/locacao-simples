@@ -327,8 +327,6 @@ input:checked + .slider:before {
 
 #edificioModal.active {
   display: flex !important;
-  /* Certifique-se de que o fundo do modal é branco */
-  background-color: #ffffff;
 }
 
 .edificio-item {
@@ -336,7 +334,7 @@ input:checked + .slider:before {
   border: 1px solid #ddd;
   border-radius: 5px;
   cursor: pointer;
-  background: #ffffff; /* Fundo branco para os itens do edifício */
+  background: #f9f9f9;
   transition: all 0.2s;
 }
 
@@ -436,7 +434,7 @@ input:checked + .slider:before {
     <div class="person-row responsible">
       <div class="col"><label>Nome:</label><input type="text" name="responsiblePersonName" readonly></div>
       <div class="col"><label>Documento:</label><input type="text" name="responsiblePersonDoc" readonly></div>
-      <div class="col switch-col">
+      <div class="col">
         <label>Criança:</label>
         <label class="switch">
           <input type="checkbox" disabled>
@@ -461,8 +459,8 @@ input:checked + .slider:before {
   </div>
 </form>
 
-<div id="edificioSelectionModal" style="display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgba(0,0,0,0.4);"> <!-- Overlay semi-transparente -->
-  <div style="background-color: #ffffff; margin: 15% auto; padding: 20px; border: 1px solid #888; width: 80%; max-width: 500px; border-radius: 10px;">
+<div id="edificioSelectionModal" style="display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgba(0,0,0,0.4);">
+  <div style="background-color: #fefefe; margin: 15% auto; padding: 20px; border: 1px solid #888; width: 80%; max-width: 500px; border-radius: 10px;">
     <h2>Selecione o Edifício</h2>
     <div id="edificioList" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 10px; margin-top: 15px;"></div>
   </div>
@@ -523,9 +521,9 @@ function generateWhatsAppMessage() {
 
   const vehicleRows = document.querySelectorAll("#vehicleContainer .vehicle-row");
   vehicleRows.forEach((row, index) => {
-    const modelo = row.querySelector("input[name=\'modelo\"]").value;
-    const cor = row.querySelector("input[name=\'cor\"]").value;
-    const placa = row.querySelector("input[name=\'placa\"]").value;
+    const modelo = row.querySelector("input[name=\'modelo\']").value;
+    const cor = row.querySelector("input[name=\'cor\']").value;
+    const placa = row.querySelector("input[name=\'placa\']").value;
     if (modelo || cor || placa) {
       message += `*Veículo ${index + 1}:* ${modelo} ${cor} - Placa: ${placa}\n\n`;
     }
@@ -536,9 +534,9 @@ function generateWhatsAppMessage() {
 
   const personRows = document.querySelectorAll("#peopleContainer .person-row");
   personRows.forEach(row => {
-    const nomeInput = row.querySelector("input[name=\'responsiblePersonName\"]") || row.querySelector("input[name=\'personName[]\"]");
-    const docInput = row.querySelector("input[name=\'responsiblePersonDoc\"]") || row.querySelector("input[name=\'personDoc[]\"]");
-    const isChildCheckbox = row.querySelector(".switch input[type=\'checkbox\"]");
+    const nomeInput = row.querySelector("input[name=\'responsiblePersonName\']") || row.querySelector("input[name=\'personName[]\']");
+    const docInput = row.querySelector("input[name=\'responsiblePersonDoc\']") || row.querySelector("input[name=\'personDoc[]\']");
+    const isChildCheckbox = row.querySelector(".switch input[type=\'checkbox\']");
 
     const nome = nomeInput ? nomeInput.value : "";
     const doc = docInput ? docInput.value : "";
@@ -609,7 +607,7 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   whatsappBtn.addEventListener("click", () => {
-    const edificioSelecionado = document.querySelector("input[name=\'edificio\"]").value;
+    const edificioSelecionado = document.querySelector("input[name=\'edificio\']").value;
     const phoneNumber = getPhoneNumber(edificioSelecionado);
     const message = generateWhatsAppMessage();
     window.open(`https://wa.me/${phoneNumber}?text=${message}`, "_blank");
@@ -638,8 +636,8 @@ function updateResponsiblePerson() {
   const nome = document.querySelector("[name=responsavel]").value;
   const cpf = document.querySelector("[name=cpf]").value;
   const rg = document.querySelector("[name=rg]").value;
-  responsibleRow.querySelector("input[name=\'responsiblePersonName\"]").value = nome;
-  responsibleRow.querySelector("input[name=\'responsiblePersonDoc\"]").value = `${cpf}${rg ? ' / ' + rg : ''}`;
+  responsibleRow.querySelector("input[name=\'responsiblePersonName\']").value = nome;
+  responsibleRow.querySelector("input[name=\'responsiblePersonDoc\']").value = `${cpf}${rg ? ' / ' + rg : ''}`;
 }
 
 function formatCPF(input) {
@@ -689,9 +687,9 @@ function showReview() {
   const vehicleContainer = document.getElementById("vehicleContainer");
   const vehicleRows = vehicleContainer.querySelectorAll(".vehicle-row");
   vehicleRows.forEach((row, index) => {
-    const modelo = row.querySelector("input[name=\'modelo\"]").value;
-    const cor = row.querySelector("input[name=\'cor\"]").value;
-    const placa = row.querySelector("input[name=\'placa\"]").value;
+    const modelo = row.querySelector("input[name=\'modelo\']").value;
+    const cor = row.querySelector("input[name=\'cor\']").value;
+    const placa = row.querySelector("input[name=\'placa\']").value;
     if (modelo || cor || placa) {
       reviewHTML += `<div class="review-item"><span class="review-label">Veículo ${index + 1}:</span> <span class="review-value">${modelo} ${cor} - Placa: ${placa}</span></div>`;
     }
@@ -706,61 +704,55 @@ function showReview() {
   peopleSummary.innerHTML = "";
   const personRows = document.querySelectorAll("#peopleContainer .person-row");
   personRows.forEach(row => {
-    const nomeInput = row.querySelector("input[name=\'responsiblePersonName\"]") || row.querySelector("input[name=\'personName[]\"]");
-    const docInput = row.querySelector("input[name=\'responsiblePersonDoc\"]") || row.querySelector("input[name=\'personDoc[]\"]");
-    const isChildCheckbox = row.querySelector(".switch input[type=\'checkbox\"]");
+    const nomeInput = row.querySelector("input[name=\'responsiblePersonName\']") || row.querySelector("input[name=\'personName[]\']");
+    const docInput = row.querySelector("input[name=\'responsiblePersonDoc\']") || row.querySelector("input[name=\'personDoc[]\']");
+    const isChildCheckbox = row.querySelector(".switch input[type=\'checkbox\']");
 
     const nome = nomeInput ? nomeInput.value : "";
     const doc = docInput ? docInput.value : "";
-    const isChild = isChildCheckbox && isChildCheckbox.checked ? " (criança)" : "";
+    const isChild = isChildCheckbox && isChildCheckbox.checked ? " (Criança)" : "";
 
     if (nome) {
-      peopleSummary.innerHTML += `<div class="review-item"><span class="review-label">${nome}</span><span class="review-value">${isChild} - Doc: ${doc}</span></div>`;
+      const summaryItem = document.createElement("div");
+      summaryItem.style.textAlign = "left";
+      summaryItem.innerHTML = `<b>${nome.toUpperCase()}</b>${isChild.toUpperCase()} - Documento: ${doc.toUpperCase()}`;
+      peopleSummary.appendChild(summaryItem);
     }
   });
-
-  peopleSummary.innerHTML += `<div class="review-item"><span class="review-label">Condição do imóvel:</span> <span class="review-value">${data.get("tipoLocacao")}</span></div>`;
 }
 
 function addPersonRow() {
-  const peopleContainer = document.getElementById("peopleContainer");
+  const container = document.getElementById("peopleContainer");
   const newRow = document.createElement("div");
   newRow.className = "person-row";
   newRow.innerHTML = `
-    <div class="col"><label>Nome:</label><input type="text" name="personName[]"></div>
-    <div class="col"><label>Documento:</label><input type="text" name="personDoc[]"></div>
-    <div class="col switch-col">
+      <div class="col"><label>Nome:</label><input type="text" name="personName[]" required></div>
+      <div class="col"><label>Documento:</label><input type="text" name="personDoc[]"></div>
+    <div class="col">
       <label>Criança:</label>
       <label class="switch">
         <input type="checkbox">
         <span class="slider"></span>
       </label>
     </div>
-    <button type="button" class="remove-button">REMOVER</button>
+    <button type="button" class="remove-button" onclick="this.parentElement.remove()">REMOVER</button>
   `;
-  peopleContainer.appendChild(newRow);
-  newRow.querySelector(".remove-button").addEventListener("click", () => {
-    peopleContainer.removeChild(newRow);
-  });
+  container.appendChild(newRow);
 }
 
 function addVehicleRow() {
-  const vehicleContainer = document.getElementById("vehicleContainer");
+  const container = document.getElementById("vehicleContainer");
   const newRow = document.createElement("div");
   newRow.className = "vehicle-row";
   newRow.innerHTML = `
-    <div class="col"><label>Modelo:</label><input type="text" name="modelo"></div>
-    <div class="col"><label>Cor:</label><input type="text" name="cor"></div>
+    <div class="col"><label>Modelo:</label><input type="text" name="modelo" required></div>
+    <div class="col"><label>Cor:</label><input type="text" name="cor" required></div>
     <div class="col"><label>Placa:</label><input type="text" name="placa"></div>
-    <button type="button" class="remove-button">REMOVER</button>
+    <button type="button" class="remove-button" onclick="this.parentElement.remove()">REMOVER</button>
   `;
-  vehicleContainer.appendChild(newRow);
-  newRow.querySelector(".remove-button").addEventListener("click", () => {
-    vehicleContainer.removeChild(newRow);
-  });
+  container.appendChild(newRow);
 }
 </script>
-
 </body>
 </html>
 
