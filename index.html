@@ -567,7 +567,13 @@ document.getElementById('finalizarBtn').addEventListener('click', function(){
   document.getElementById('reviewTelefone').textContent=form.telefone.value;
   document.getElementById('reviewCpf').textContent=form.cpf.value;
   document.getElementById('reviewRg').textContent=form.rg.value;
-  document.getElementById('reviewEndereco').textContent=`${form.endereco.value}, ${form.numero.value} - ${form.bairro.value}, ${form.cidade.value} - ${form.uf.value}`;
+  const enderecoParts = [];
+  if (form.endereco.value) enderecoParts.push(form.endereco.value);
+  if (form.numero.value) enderecoParts.push(form.numero.value);
+  if (form.bairro.value) enderecoParts.push(form.bairro.value);
+  if (form.cidade.value) enderecoParts.push(form.cidade.value);
+  if (form.uf.value) enderecoParts.push(form.uf.value);
+  document.getElementById('reviewEndereco').textContent = enderecoParts.join(', ');
   document.getElementById('reviewChegada').textContent=form.chegada.value.split('-').reverse().join('/');
   document.getElementById('reviewSaida').textContent=form.saida.value.split('-').reverse().join('/');
   document.getElementById('reviewTipoLocacao').textContent=form.tipoLocacao.value;
