@@ -316,7 +316,7 @@ input:checked + .slider:before {
   <div class="row">
     <div class="col">
       <label>Nome do Edifício:</label>
-      <input type="text" name="edificio" id="edificioInput" required readonly style="cursor: pointer;">
+      <input type="text" name="edificio" id="edificioInput" list="edificiosList" required>
     </div>
     <div class="col">
       <label>Número do Apartamento:</label>
@@ -421,13 +421,6 @@ input:checked + .slider:before {
   </div>
 </form>
 
-<div id="edificioModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:1000; justify-content:center; align-items:center;">
-  <div style="background:white; border-radius:10px; padding:20px; max-width:400px; max-height:80vh; overflow-y:auto; box-shadow:0 4px 20px rgba(0,0,0,0.2);">
-    <h2 style="text-align:center; margin-top:0;">SELECIONE O EDIFÍCIO</h2>
-    <div id="edificioList" style="display:flex; flex-direction:column; gap:8px;"></div>
-  </div>
-</div>
-
 <div id="reviewPage" class="form-container">
   <div class="form-header-container">
     <div class="form-logo">
@@ -435,26 +428,34 @@ input:checked + .slider:before {
     </div>
     <div class="form-title">FICHA PARA CONTROLE DE LOCAÇÃO</div>
   </div>
-  <div id="reviewContent"></div>
-  <div id="peopleTitle">LISTA DE INQUILINOS</div>
+
+  <div class="review-item"><span class="review-label">Edifício:</span> <span class="review-value" id="reviewEdificio"></span></div>
+  <div class="review-item"><span class="review-label">Apartamento:</span> <span class="review-value" id="reviewApartamento"></span></div>
+  <div class="review-item"><span class="review-label">Responsável:</span> <span class="review-value" id="reviewResponsavel"></span></div>
+  <div class="review-item"><span class="review-label">Telefone:</span> <span class="review-value" id="reviewTelefone"></span></div>
+  <div class="review-item"><span class="review-label">CPF:</span> <span class="review-value" id="reviewCpf"></span></div>
+  <div class="review-item"><span class="review-label">RG:</span> <span class="review-value" id="reviewRg"></span></div>
+  <div class="review-item"><span class="review-label">Endereço:</span> <span class="review-value" id="reviewEndereco"></span></div>
+  <div class="review-item"><span class="review-label">Chegada:</span> <span class="review-value" id="reviewChegada"></span></div>
+  <div class="review-item"><span class="review-label">Saída:</span> <span class="review-value" id="reviewSaida"></span></div>
+  <div class="review-item"><span class="review-label">Tipo de Locação:</span> <span class="review-value" id="reviewTipoLocacao"></span></div>
+  <div id="reviewVeiculos"></div>
+
+  <div id="peopleTitle">LISTA DE PESSOAS E DOCUMENTOS</div>
   <div id="peopleSummary"></div>
-  <div id="reviewPeople"></div>
+  <div id="reviewPessoas"></div>
+
   <div class="attention">
-ATENÇÃO: 
-Não é permitida a ocupação do apartamento sem a apresentação desta ficha cadastral totalmente preenchida. Assim como o empréstimo do cartão de acesso ao prédio. A ficha deverá ser entregue com 24 horas de antecedência à ocupação. 
-
-ART. 9º da convenção de condomínio – Sei e concordo que sou responsável perante o condomínio, civil ou criminalmente, por todos os atos ou infrações que venham a ser praticados por meus empregados, inquilinos ou ocupantes da minha unidade.
-  </div>
-
-  <div style="margin-top:10px;">
-    <button id="enviarBtn" style="width:100%; margin-bottom:10px;">ENVIAR</button>
+    ATENÇÃO: É obrigatório o preenchimento da ficha de forma completa e legível. A falta de informações ou a falsidade das mesmas pode acarretar em sanções legais. Agradecemos a sua colaboração.
   </div>
 
   <div class="button-group">
-    <button id="voltarBtn">VOLTAR E EDITAR</button>
-    <button id="printBtn">IMPRIMIR</button>
-    <button id="whatsappBtn">FALE COM A PORTARIA BLINDADO</button>
+    <button type="button" id="voltarBtn">VOLTAR</button>
+    <button type="button" id="printBtn">IMPRIMIR</button>
+    <button type="button" id="enviarBtn">ENVIAR</button>
   </div>
+
+  <button type="button" id="whatsappBtn">FALE COM A PORTARIA DA BLINDADO</button>
 
   <div class="signature-line">
     <hr>
@@ -463,151 +464,155 @@ ART. 9º da convenção de condomínio – Sei e concordo que sou responsável p
 </div>
 
 <script>
+const edificiosPraiaDoMorro = [
+  "ALESSANDRO", "ANGELICA PAGANINI", "ATRIUM VERONA", "ANTONIO DI PIETRO",
+  "BOLONHA", "CASA BLANCA", "CORDIALLE", "DEL PIETRO", "DOM HENRIQUE",
+  "GRAAL", "ILHA DAS GARÇAS", "JUIZ PEDRO", "LAVINIA", "MAR E SOL",
+  "MARIA BONFIM", "MIRADOR", "MOOREA BEACH", "NINIVE ALMEIDA",
+  "PRAIA DAS VIRTUDES", "PRAIA BELLA", "PRIME", "REFINATTO",
+  "RUBEM BRAGA", "SUMMER HILL", "TIFANY", "VARANDAS DO MAR", "VIENA"
+];
+
+const edificiosNovaGuarapari = [
+  "ATOBA", "BELLAGIO", "CAIADO RODRIGUES", "CALIFORNIA", "CAROLINA",
+  "CORAIS DA ENSEADA", "ENSEADA VIP", "GRANITO", "ILHA DE COMANDATUBA",
+  "JEAN MARCEL", "LONG SUMMER", "MAESTRO", "MAIS JK", "MALIBU",
+  "MARGARIDA MOTTA", "MAREK", "MAR E SOL", "MAR DE VENEZA", "MONTE BLU",
+  "MURANO", "PANORAMIC", "PERACANGA", "PONTAL D’AREIA",
+  "PRAIA DE PERACANGA", "PREDILETTO", "RECANTO DA PRAIA", "SANTORINI",
+  "SEVEN", "SERENATA", "SOLLARIUM", "SPLENDIA", "VENETO", "VERDES MARES"
+];
+
+function getPhoneNumber(edificio) {
+  const edificioUpper = edificio.toUpperCase();
+  if (edificiosPraiaDoMorro.includes(edificioUpper)) {
+    return "5527999626933"; // Número para Praia do Morro
+  } else if (edificiosNovaGuarapari.includes(edificioUpper)) {
+    return "5527998173386"; // Número para Nova Guaraparí
+  } else {
+    return "5527996930305"; // Número padrão (Blindado)
+  }
+}
+
 function formatCPF(input){
   let v=input.value.replace(/\D/g,'');
   if(v.length>11)v=v.slice(0,11);
-  v=v.replace(/(\d{3})(\d)/,'$1.$2');
-  v=v.replace(/(\d{3})(\d)/,'$1.$2');
-  v=v.replace(/(\d{3})(\d{1,2})$/,'$1-$2');
+  v=v.replace(/(\d{3})(\d)/, '$1.$2');
+  v=v.replace(/(\d{3})(\d)/, '$1.$2');
+  v=v.replace(/(\d{3})(\d{1,2})$/, '$1-$2');
   input.value=v;
 }
 
 function formatPhone(input){
   let v=input.value.replace(/\D/g,'');
   if(v.length>11)v=v.slice(0,11);
-  v=v.replace(/(\d{2})(\d)/,'($1) $2');
-  v=v.replace(/(\d{5})(\d)/,'$1-$2');
+  v=v.replace(/^(\d{2})(\d)/g, '($1) $2');
+  v=v.replace(/(\d{5})(\d)/, '$1-$2');
   input.value=v;
 }
 
-const edificios = ['ALESSANDRO', 'ANGELICA PAGANINI', 'ATRIUM VERONA', 'ANTONIO DI PIETRO', 'BOLONHA', 'CASA BLANCA', 'CORDIALLE', 'DEL PIETRO', 'DOM HENRIQUE', 'GRAAL', 'ILHA DAS GARCAS', 'JUIZ PEDRO', 'LAVINIA', 'MAR E SOL', 'MARIA BONFIM', 'MIRADOR', 'MOOREA BEACH', 'NINIVE ALMEIDA', 'PRAIA DAS VIRTUDES', 'PRAIA BELLA', 'PRIME', 'REFINATTO', 'RUBEM BRAGA', 'SUMMER HILL', 'TIFANY', 'VARANDAS DO MAR', 'VIENA', 'ATOBA', 'BELLAGIO', 'CAIADO RODRIGUES', 'CALIFORNIA', 'CAROLINA', 'CORAIS DA ENSEADA', 'ENSEADA VIP', 'GRANITO', 'ILHA DE COMANDATUBA', 'JEAN MARCEL', 'LONG SUMMER', 'MAESTRO', 'MAIS JK', 'MALIBU', 'MARGARIDA MOTTA', 'MAREK', 'MAR DE VENEZA', 'MONTE BLU', 'MURANO', 'PANORAMIC', 'PERACANGA', 'PONTAL D\'AREIA', 'PRAIA DE PERACANGA', 'PREDILETTO', 'RECANTO DA PRAIA', 'SANTORINI', 'SEVEN', 'SERENATA', 'SOLLARIUM', 'SPLENDIA', 'VENETO', 'VERDES MARES'].sort();
-
-function abrirModalEdificios() {
-  const modal = document.getElementById('edificioModal');
-  const lista = document.getElementById('edificioList');
-  lista.innerHTML = '';
-  edificios.forEach(ed => {
-    const div = document.createElement('div');
-    div.className = 'edificio-item';
-    div.textContent = ed;
-    div.addEventListener('click', () => {
-      document.getElementById('edificioInput').value = ed;
-      modal.classList.remove('active');
-    });
-    lista.appendChild(div);
-  });
-  modal.classList.add('active');
+function updateResponsiblePerson(){
+  const form=document.getElementById('locacaoForm');
+  const responsibleRow=document.querySelector('.person-row.responsible');
+  responsibleRow.querySelectorAll('input')[0].value=form.responsavel.value;
+  responsibleRow.querySelectorAll('input')[1].value=form.cpf.value;
 }
 
-document.getElementById('edificioInput').addEventListener('click', abrirModalEdificios);
-document.getElementById('edificioModal').addEventListener('click', (e) => {
-  if (e.target.id === 'edificioModal') {
-    e.target.classList.remove('active');
-  }
+document.querySelector('.add-person').addEventListener('click', function(){
+  const container=document.getElementById('peopleContainer');
+  const newRow=document.createElement('div');
+  newRow.className='person-row';
+  newRow.innerHTML=`
+    <div class="col"><label>Nome:</label><input type="text"></div>
+    <div class="col"><label>Documento:</label><input type="text"></div>
+    <div class="col"><label>Criança:</label><label class="switch"><input type="checkbox"><span class="slider"></span></label></div>
+    <button type="button" onclick="this.parentElement.remove()">Remover</button>
+  `;
+  container.appendChild(newRow);
 });
 
-function updateResponsiblePerson(){
-  const row=document.querySelector('.person-row.responsible');
-  row.querySelectorAll('input')[0].value=document.querySelector('input[name="responsavel"]').value;
-  row.querySelectorAll('input')[1].value=document.querySelector('input[name="cpf"]').value;
-}
-
-function addPersonRow(){
-  const container=document.getElementById('peopleContainer');
-  const row=document.createElement('div');
-  row.className='person-row';
-  row.innerHTML=`<div class="col"><label>Nome:</label><input type="text" placeholder="Nome completo" required></div>
-  <div class="col"><label>Documento:</label><input type="text" placeholder="Número do documento" required></div>
-  <div class="col"><label>Criança:</label>
-    <label class="switch"><input type="checkbox" onchange="updateCounts()"><span class="slider"></span></label>
-  </div>`;
-  container.appendChild(row);
-}
+document.getElementById('vehicleToggleBtn').addEventListener('click', function(){
+  const section=document.getElementById('vehicleSection');
+  if(section.style.display==='none'){
+    section.style.display='block';
+    this.textContent='NÃO POSSUI VEÍCULO';
+    if(!document.querySelector('.vehicle-row')) addVehicleRow();
+  } else {
+    section.style.display='none';
+    this.textContent='REGISTRAR VEÍCULO';
+    document.getElementById('vehicleContainer').innerHTML='';
+  }
+});
 
 function addVehicleRow(){
   const container=document.getElementById('vehicleContainer');
   const newRow=document.createElement('div');
   newRow.className='vehicle-row';
-  const count=container.querySelectorAll('.vehicle-row').length+1;
-  newRow.innerHTML=`<div class="col"><label>Modelo do veículo:</label><input type="text" name="veiculo[]" placeholder="Modelo do veículo ${count}"></div>
-  <div class="col"><label>Cor:</label><input type="text" name="cor[]" placeholder="Cor ${count}"></div>
-  <div class="col"><label>Placa:</label><input type="text" name="placa[]" placeholder="Placa ${count}"></div>`;
+  newRow.innerHTML=`
+    <div class="col"><label>Modelo:</label><input type="text"></div>
+    <div class="col"><label>Cor:</label><input type="text"></div>
+    <div class="col"><label>Placa:</label><input type="text"></div>
+    <button type="button" onclick="this.parentElement.remove()">Remover</button>
+  `;
   container.appendChild(newRow);
 }
 
-const vehicleToggleBtn=document.getElementById('vehicleToggleBtn');
-vehicleToggleBtn.addEventListener('click',()=>{
-  const sec=document.getElementById('vehicleSection');
-  if(sec.style.display==='none'||sec.style.display===''){
-    sec.style.display='block';
-    vehicleToggleBtn.textContent='NÃO REGISTRAR VEÍCULO';
-    if(document.getElementById('vehicleContainer').children.length===0) addVehicleRow();
-  }else{
-    sec.style.display='none';
-    vehicleToggleBtn.textContent='REGISTRAR VEÍCULO';
-    document.getElementById('vehicleContainer').innerHTML='';
-  }
-});
+document.querySelector('.add-vehicle').addEventListener('click', addVehicleRow);
 
-document.querySelector('.add-person').addEventListener('click',addPersonRow);
-document.querySelector('.add-vehicle').addEventListener('click',addVehicleRow);
-
-function updateCounts(){
-  let adults=1;
-  let children=0;
-  const rows=document.querySelectorAll('.person-row');
-  rows.forEach((r,i)=>{
-    if(r.classList.contains('responsible')) return;
-    const checkbox=r.querySelector('input[type=checkbox]');
-    if(checkbox.checked) children++; else adults++;
-  });
-  return {adults, children};
-}
-
-document.getElementById('finalizarBtn').addEventListener('click',()=>{
-  const counts=updateCounts();
+document.getElementById('finalizarBtn').addEventListener('click', function(){
   const form=document.getElementById('locacaoForm');
   const review=document.getElementById('reviewPage');
-  const reviewContent=document.getElementById('reviewContent');
-  const reviewPeople=document.getElementById('reviewPeople');
+  const reviewPessoas=document.getElementById('reviewPessoas');
+  const reviewVeiculos=document.getElementById('reviewVeiculos');
   const peopleSummary=document.getElementById('peopleSummary');
 
-  reviewContent.innerHTML='';
-  reviewPeople.innerHTML='';
+  document.getElementById('reviewEdificio').textContent=form.edificio.value;
+  document.getElementById('reviewApartamento').textContent=form.apartamento.value;
+  document.getElementById('reviewResponsavel').textContent=form.responsavel.value;
+  document.getElementById('reviewTelefone').textContent=form.telefone.value;
+  document.getElementById('reviewCpf').textContent=form.cpf.value;
+  document.getElementById('reviewRg').textContent=form.rg.value;
+  document.getElementById('reviewEndereco').textContent=`${form.endereco.value}, ${form.numero.value} - ${form.bairro.value}, ${form.cidade.value} - ${form.uf.value}`;
+  document.getElementById('reviewChegada').textContent=form.chegada.value.split('-').reverse().join('/');
+  document.getElementById('reviewSaida').textContent=form.saida.value.split('-').reverse().join('/');
+  document.getElementById('reviewTipoLocacao').textContent=form.tipoLocacao.value;
 
-  const addItem=(label,value)=>{
-    const div=document.createElement('div');
-    div.className='review-item';
-    div.innerHTML=`<span class="review-label">${label}:</span> <span class="review-value">${value.toUpperCase()}</span>`;
-    reviewContent.appendChild(div);
-  }
-
-  addItem('Edifício',form.edificio.value);
-  addItem('Apartamento',form.apartamento.value);
-  addItem('Responsável',form.responsavel.value);
-  addItem('Telefone',form.telefone.value);
-  addItem('CPF',form.cpf.value);
-  addItem('RG',form.rg.value);
-  addItem('Endereço',form.endereco.value);
-  addItem('Número',form.numero.value);
-  addItem('Bairro',form.bairro.value);
-  addItem('Cidade',form.cidade.value);
-  addItem('UF',form.uf.value);
-  addItem('Chegada',form.chegada.value);
-  addItem('Saída',form.saida.value);
-
-  const rows=document.querySelectorAll('.person-row');
-  rows.forEach(r=>{
-    const name=r.querySelectorAll('input')[0].value.toUpperCase();
+  reviewPessoas.innerHTML='';
+  const peopleRows=document.querySelectorAll('.person-row');
+  let counts={adults:0,children:0};
+  peopleRows.forEach(r=>{
+    const name=r.querySelectorAll('input')[0].value;
     const doc=r.querySelectorAll('input')[1].value;
     const isChild=r.querySelector('input[type=checkbox]')?.checked;
-    let docLabel='';
-    if(doc.length===11) docLabel='CPF'; else if(doc.length>0) docLabel='RG';
-    const div=document.createElement('div');
-    div.className='review-item';
-    div.innerHTML=`<span class="review-value">${name}${isChild?' | CRIANÇA':''}${doc?` | ${docLabel}: ${doc}`:''}</span>`;
-    reviewPeople.appendChild(div);
+    if(name){
+      const p=document.createElement('div');
+      p.className='review-item';
+      p.textContent=`${name}${isChild?' (Criança)':''}${doc?` - Doc: ${doc}`:''}`;
+      reviewPessoas.appendChild(p);
+      isChild?counts.children++:counts.adults++;
+    }
   });
+
+  reviewVeiculos.innerHTML='';
+  if(document.getElementById('vehicleSection').style.display==='block'){
+    const vehicleRows=document.querySelectorAll('.vehicle-row');
+    if(vehicleRows.length>0){
+      const h=document.createElement('h3');
+      h.textContent='Veículos';
+      reviewVeiculos.appendChild(h);
+      vehicleRows.forEach(r=>{
+        const model=r.querySelectorAll('input')[0].value;
+        const color=r.querySelectorAll('input')[1].value;
+        const plate=r.querySelectorAll('input')[2].value;
+        if(model||color||plate){
+          const p=document.createElement('div');
+          p.className='review-item';
+          p.textContent=`Modelo: ${model}, Cor: ${color}, Placa: ${plate}`;
+          reviewVeiculos.appendChild(p);
+        }
+      });
+    }
+  }
 
   peopleSummary.textContent=`ADULTOS: ${counts.adults} | CRIANÇAS: ${counts.children}`;
 
@@ -634,14 +639,80 @@ document.getElementById('enviarBtn').addEventListener('click',()=>{
       msg+=`\n${name}${isChild?' | CRIANÇA':''}${doc?` | Documento: ${doc}`:''}`;
     }
   });
-  const link='https://wa.me/5527998173386?text='+encodeURIComponent(msg);
+  const edificioSelecionado = document.getElementById('edificioInput').value;
+  const phoneNumber = getPhoneNumber(edificioSelecionado);
+  const link='https://wa.me/' + phoneNumber + '?text=' + encodeURIComponent(msg);
   window.open(link,'_blank');
 });
 
 document.getElementById('whatsappBtn').addEventListener('click',()=>{
-  window.open('https://api.whatsapp.com/send/?phone=5527998173386','_blank');
+  const edificioSelecionado = document.getElementById('edificioInput').value;
+  const phoneNumber = getPhoneNumber(edificioSelecionado);
+  window.open(`https://api.whatsapp.com/send/?phone=${phoneNumber}`,'_blank');
 });
 </script>
+
+<datalist id="edificiosList">
+    <option value="ALESSANDRO">
+    <option value="ANGELICA PAGANINI">
+    <option value="ANTONIO DI PIETRO">
+    <option value="ATOBA">
+    <option value="ATRIUM VERONA">
+    <option value="BELLAGIO">
+    <option value="BOLONHA">
+    <option value="CAIADO RODRIGUES">
+    <option value="CALIFORNIA">
+    <option value="CAROLINA">
+    <option value="CASA BLANCA">
+    <option value="CORAIS DA ENSEADA">
+    <option value="CORDIALLE">
+    <option value="DEL PIETRO">
+    <option value="DOM HENRIQUE">
+    <option value="ENSEADA VIP">
+    <option value="GRAAL">
+    <option value="GRANITO">
+    <option value="ILHA DAS GARÇAS">
+    <option value="ILHA DE COMANDATUBA">
+    <option value="JEAN MARCEL">
+    <option value="JUIZ PEDRO">
+    <option value="LAVINIA">
+    <option value="LONG SUMMER">
+    <option value="MAESTRO">
+    <option value="MAIS JK">
+    <option value="MALIBU">
+    <option value="MAR E SOL">
+    <option value="MAR DE VENEZA">
+    <option value="MARGARIDA MOTTA">
+    <option value="MAREK">
+    <option value="MARIA BONFIM">
+    <option value="MIRADOR">
+    <option value="MONTE BLU">
+    <option value="MOOREA BEACH">
+    <option value="MURANO">
+    <option value="NINIVE ALMEIDA">
+    <option value="PANORAMIC">
+    <option value="PERACANGA">
+    <option value="PONTAL D’AREIA">
+    <option value="PRAIA BELLA">
+    <option value="PRAIA DAS VIRTUDES">
+    <option value="PRAIA DE PERACANGA">
+    <option value="PREDILETTO">
+    <option value="PRIME">
+    <option value="RECANTO DA PRAIA">
+    <option value="REFINATTO">
+    <option value="RUBEM BRAGA">
+    <option value="SANTORINI">
+    <option value="SERENATA">
+    <option value="SEVEN">
+    <option value="SOLLARIUM">
+    <option value="SPLENDIA">
+    <option value="SUMMER HILL">
+    <option value="TIFANY">
+    <option value="VARANDAS DO MAR">
+    <option value="VENETO">
+    <option value="VERDES MARES">
+    <option value="VIENA">
+  </datalist>
 
 </body>
 </html>
