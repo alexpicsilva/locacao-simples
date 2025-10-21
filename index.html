@@ -111,9 +111,30 @@ textarea {
   align-items: flex-end; /* Alinha os itens na parte inferior */
 }
 
+.person-row .col.switch-col {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding-bottom: 4px; /* Ajuste para alinhar com os inputs */
+}
+
+.person-row .col.switch-col label {
+  margin-bottom: 0;
+}
+
+
 .person-row .col, .vehicle-row .col {
   flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end; /* Alinha o conteúdo da coluna na parte inferior */
 }
+
+.person-row .col label,
+.vehicle-row .col label {
+  margin-bottom: 4px; /* Ajusta o espaçamento entre o label e o input */
+}
+
 
 .remove-button {
     background: #e74c3c;
@@ -413,7 +434,13 @@ input:checked + .slider:before {
     <div class="person-row responsible">
       <div class="col"><label>Nome:</label><input type="text" readonly></div>
       <div class="col"><label>Documento:</label><input type="text" readonly></div>
-      <div class="col"><label>Criança:</label><label class="switch"><input type="checkbox" disabled><span class="slider"></span></label></div>
+      <div class="col">
+        <label>Criança:</label>
+        <label class="switch">
+          <input type="checkbox" disabled>
+          <span class="slider"></span>
+        </label>
+      </div>
       <!-- Não há botão de remover para a pessoa responsável -->
     </div>
   </div>
@@ -566,7 +593,13 @@ function addPersonRow() {
   newRow.innerHTML = `
     <div class="col"><label>Nome:</label><input type="text" required></div>
     <div class="col"><label>Documento:</label><input type="text" required></div>
-    <div class="col"><label>Criança:</label><label class="switch"><input type="checkbox"><span class="slider"></span></label></div>
+    <div class="col">
+      <label>Criança:</label>
+      <label class="switch">
+        <input type="checkbox">
+        <span class="slider"></span>
+      </label>
+    </div>
     <button type="button" class="remove-button" onclick="this.parentElement.remove()">REMOVER</button>
   `;
   container.appendChild(newRow);
