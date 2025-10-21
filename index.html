@@ -380,11 +380,11 @@ input:checked + .slider:before {
   <div class="row">
     <div class="col">
       <label>CPF:</label>
-      <input type="text" name="cpf" maxlength="14" required oninput="formatCPF(this); updateResponsiblePerson()">
+      <input type="text" name="cpf" maxlength="14" oninput="formatCPF(this); updateResponsiblePerson()">
     </div>
     <div class="col">
       <label>RG:</label>
-      <input type="text" name="rg" required oninput="updateResponsiblePerson()">
+      <input type="text" name="rg" oninput="updateResponsiblePerson()">
     </div>
   </div>
 
@@ -593,7 +593,7 @@ function addPersonRow() {
   newRow.className = "person-row";
   newRow.innerHTML = `
     <div class="col"><label>Nome:</label><input type="text" required></div>
-    <div class="col"><label>Documento:</label><input type="text" required></div>
+    <div class="col"><label>Documento:</label><input type="text"></div>
     <div class="col">
       <label>Criança:</label>
       <label class="switch">
@@ -613,7 +613,7 @@ function addVehicleRow() {
   newRow.innerHTML = `
     <div class="col"><label>Modelo:</label><input type="text" required></div>
     <div class="col"><label>Cor:</label><input type="text" required></div>
-    <div class="col"><label>Placa:</label><input type="text" required></div>
+    <div class="col"><label>Placa:</label><input type="text"></div>
     <button type="button" class="remove-button" onclick="this.parentElement.remove()">REMOVER</button>
   `;
   container.appendChild(newRow);
