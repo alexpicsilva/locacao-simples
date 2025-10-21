@@ -111,11 +111,13 @@ textarea {
   align-items: center;
 }
 
-.person-row input, .vehicle-row input {
-  flex: 1 1 auto;
+.person-row .col, .vehicle-row .col {
+  flex: 1;
 }
 
 .remove-button {
+    align-self: flex-end; /* Alinha o botão com a base dos campos */
+
     background: #e74c3c;
     color: white;
     border: none;
@@ -570,7 +572,7 @@ function addPersonRow() {
     <div class="col"><label>Nome:</label><input type="text" required></div>
     <div class="col"><label>Documento:</label><input type="text" required></div>
     <div class="col"><label>Criança:</label><label class="switch"><input type="checkbox"><span class="slider"></span></label></div>
-    <button type="button" class="remove-button" onclick="this.parentElement.remove()">REMOVER</button>
+    <div class="col-auto"><button type="button" class="remove-button" onclick="this.parentElement.remove()">REMOVER</button></div>
   `;
   container.appendChild(newRow);
 }
@@ -583,7 +585,7 @@ function addVehicleRow() {
     <div class="col"><label>Modelo:</label><input type="text" required></div>
     <div class="col"><label>Cor:</label><input type="text" required></div>
     <div class="col"><label>Placa:</label><input type="text" required></div>
-    <button type="button" class="remove-button" onclick="this.parentElement.remove()">REMOVER</button>
+    <div class="col-auto"><button type="button" class="remove-button" onclick="this.parentElement.remove()">REMOVER</button></div>
   `;
   container.appendChild(newRow);
 }
